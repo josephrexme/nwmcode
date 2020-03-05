@@ -4,7 +4,6 @@ const app = express();
 
 app.use(express.json());
 
-
 const ENDPOINT = 'https://api.graphql.jobs/';
 
 const query = `

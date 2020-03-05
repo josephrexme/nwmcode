@@ -1,5 +1,8 @@
 import React, { useEffect, useReducer } from 'react';
-import './App.css';
+import ReactMarkdown from 'react-markdown';
+import Error from './Error';
+import Loading from './Loading';
+import { Entry, List } from './Styles';
 
 const HOST = 'http://localhost:5000';
 
@@ -24,23 +27,18 @@ const requestReducer = (state, action) => {
 const requestRenderer = (status, data, error) => {
   const statuses = {
     idle: () => null,
-    loading: () => <p>Loading....</p>,
+    loading: () => <Loading />,
     loaded: () => (
-      <div>
-        { data.map(item => (
-          <div key={item.id}>
-            <h2>{item.title}</h2>
-            <p>{item.description}</p>
-          </div>
-        )) }
-      </div>
+      <List>
+      { data.map(item => (
+        <Entry key={item.id} role="region" aria-live="polite" id="entries">
+          <h1>{item.title}</h1>
+          <ReactMarkdown source={item.description} />
+        </Entry>
+      )) }
+      </List>
     ),
-    error: () => (
-      <>
-        <h1>An Error Occurred:</h1>
-        <p>{error}</p>
-      </>
-    )
+    error: () => <Error message={error} />
   };
 
   return statuses[status];
@@ -54,15 +52,20 @@ function App() {
   });
 
   useEffect(() => {
-    dispatch({ type: 'fetch' })
+    dispatch({ type: 'fetch' });
     getData().then(response => {
+      console.log(response)
       dispatch({ type: 'response', payload: response });
     }).catch(error => {
-      dispatch({ type: 'reject', payload: error })
+      dispatch({ type: 'reject', payload: error });
     });
   }, []);
 
-  return requestRenderer(request.status, request.data, request.error)()
+  return (
+    <main>
+      {requestRenderer(request.status, request.data, request.error)()}
+    </main>
+  );
 }
 
 export default App;
