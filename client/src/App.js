@@ -1,8 +1,8 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useEffect, useReducer, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import Error from './Error';
 import Loading from './Loading';
-import { Entry, List } from './Styles';
+import { Entry, List, SearchForm } from './Styles';
 
 const HOST = 'http://localhost:5000';
 
@@ -45,6 +45,8 @@ const requestRenderer = (status, data, error) => {
 }
 
 function App() {
+  const inputRef = useRef(null);
+  const [snapshot, setSnapshot] = useState([]);
   const [request, dispatch] = useReducer(requestReducer, {
     status: 'idle',
     data: [],
@@ -54,15 +56,33 @@ function App() {
   useEffect(() => {
     dispatch({ type: 'fetch' });
     getData().then(response => {
-      console.log(response)
       dispatch({ type: 'response', payload: response });
+      setSnapshot(response);
     }).catch(error => {
       dispatch({ type: 'reject', payload: error });
     });
   }, []);
 
+  const searchEntries = () => {
+    if(!request.data) return;
+    const { value } = inputRef.current;
+    const filteredEntries = snapshot.filter(entry => {
+      return entry.title.toLowerCase().includes(value.toLowerCase());
+    });
+    dispatch({ type: 'response', payload: filteredEntries });
+  };
+
   return (
     <main>
+      <SearchForm role="search">
+        <input
+          type="search"
+          aria-controls="entries"
+          placeholder="Search Jobs"
+          onChange={searchEntries}
+          ref={inputRef}
+        />
+      </SearchForm>
       {requestRenderer(request.status, request.data, request.error)()}
     </main>
   );

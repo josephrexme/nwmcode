@@ -16,9 +16,6 @@ export const GlobalStyle = createGlobalStyle`
     -webkit-font-smoothing: antialiased;
   }
   main{
-    display: grid;
-    justify-content: center;
-    align-items: center;
     width: 90%;
     max-width: 110rem;
     margin: auto;
@@ -53,7 +50,7 @@ export const Entry = styled.div`
   height: 40rem;
   padding: 2rem;
   border-radius: .5rem;
-  box-shadow: 1px 2px 5px rgba(0,0,0, .1), 0 0 8px 10px rgba(0,0,0,.05);
+  box-shadow: 1px 2px 5px rgba(0,0,0, .1), 0 0 8px 10px rgba(0,0,0,.02);
   overflow: hidden;
   h1:not(h1:first-of-type) {
     font-size: 3.0rem;
@@ -69,6 +66,24 @@ export const Entry = styled.div`
     width: 100%;
     height: 15rem;
     background: linear-gradient(to bottom, transparent 0%, white 90%);
+  }
+`;
+
+export const SearchForm = styled.form`
+  input{
+    display: block;
+    width: 100%;
+    height: 5rem;
+    margin: 0 0 10rem;
+    padding: 1rem 3rem;
+    border-radius: 2rem;
+    border: solid thin transparent;
+    font: inherit;
+    box-shadow: 1px 2px 4px rgba(0,0,0,.1), 0 0 10px rgba(0,0,0,.05), 0 0 25px 10px rgba(0,0,0,.02);
+    &:focus{
+      outline: none;
+      border-color: #ddd;
+    }
   }
 `;
 
